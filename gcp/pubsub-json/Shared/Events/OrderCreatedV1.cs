@@ -1,8 +1,8 @@
 using System.Text.Json;
 
-namespace Shared.Messages;
+namespace Shared.Events;
 
-public class SampleMessage
+public class OrderCreatedV1
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Content { get; set; } = string.Empty;
@@ -10,6 +10,6 @@ public class SampleMessage
 
     public string ToJson() => JsonSerializer.Serialize(this);
 
-    public static SampleMessage? FromJson(string json) =>
-        JsonSerializer.Deserialize<SampleMessage>(json);
+    public static OrderCreatedV1? FromJson(string json) =>
+        JsonSerializer.Deserialize<OrderCreatedV1>(json);
 }

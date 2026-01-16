@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package messaging;
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "PubSubProto.Messages";
+
+message OrderCreatedV1 {
+  string id = 1;
+  string content = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}

@@ -1,0 +1,117 @@
+# .NET Build artifacts
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+nuget.exe
+packages/
+*.nuget.props
+*.nuget.targets
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Rider
+.idea/
+*.sln.iml
+
+# Build results
+[Dd]ebugPublic/
+[Rr]eleasePublic/
+[Rr]eleases/
+*.appx
+*.appxbundle
+*.appxupload
+*.msi
+*.msix
+*.msixbundle
+*.msixupload
+
+# User files
+*.rsuser
+*.userprefs
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+
+# Publish output
+publish/
+PublishOutput/
+
+# GCP (Google Cloud Platform)
+*.json
+!appsettings.json
+!appsettings.*.json
+!launchSettings.json
+*-credentials.json
+*-service-account.json
+service-account*.json
+gcp-key*.json
+credentials/
+.gcloud/
+application_default_credentials.json
+
+# Environment files
+.env
+.env.*
+*.env
+appsettings.local.json
+secrets.json
+local.settings.json
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~

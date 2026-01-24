@@ -62,6 +62,9 @@ packages/
 *.msixbundle
 *.msixupload
 
+# Rust
+target/
+
 # User files
 *.rsuser
 *.userprefs

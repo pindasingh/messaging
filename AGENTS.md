@@ -2,39 +2,40 @@
 
 ## Repository overview
 - This repo contains messaging examples organized by problem space.
-- The top-level layout is `problem space → provider → language`.
-- Schema examples add a format layer: `schema/<provider>/<language>/<format>`.
+- The top-level layout is `problem space → provider → product → language`.
+- Schema examples add a format layer: `schema/<provider>/<product>/<language>/<format>`.
 - Primary solutions today:
-  - `schema/gcp-pubsub/csharp/json/schema-json.sln` (JSON payload examples)
-  - `schema/gcp-pubsub/csharp/proto/schema-proto.sln` (protobuf payload examples)
-  - `throughput/gcp-pubsub/csharp/throughput.sln` (high-throughput JSON examples)
+  - `schema/gcp/pubsub/csharp/json/schema-json.sln` (JSON payload examples)
+  - `schema/gcp/pubsub/csharp/proto/schema-proto.sln` (protobuf payload examples)
+  - `throughput/gcp/pubsub/csharp/throughput.sln` (high-throughput JSON examples)
 - Each language folder should include its own README with build/run steps.
-- Providers are lowercase kebab-case (for example, `gcp-pubsub`).
+- Providers are lowercase kebab-case (for example, `gcp`).
+- Products are lowercase kebab-case (for example, `pubsub`).
 - Languages use canonical names (`csharp`, `go`, `rust`).
 - Schema formats are lowercase (`json`, `proto`) and sit under language.
 
 ## Build / run / test
 ### Restore
-- `dotnet restore schema/gcp-pubsub/csharp/json/schema-json.sln`
-- `dotnet restore schema/gcp-pubsub/csharp/proto/schema-proto.sln`
-- `dotnet restore throughput/gcp-pubsub/csharp/throughput.sln`
+- `dotnet restore schema/gcp/pubsub/csharp/json/schema-json.sln`
+- `dotnet restore schema/gcp/pubsub/csharp/proto/schema-proto.sln`
+- `dotnet restore throughput/gcp/pubsub/csharp/throughput.sln`
 
 ### Build
-- `dotnet build schema/gcp-pubsub/csharp/json/schema-json.sln`
-- `dotnet build schema/gcp-pubsub/csharp/proto/schema-proto.sln`
-- `dotnet build throughput/gcp-pubsub/csharp/throughput.sln`
+- `dotnet build schema/gcp/pubsub/csharp/json/schema-json.sln`
+- `dotnet build schema/gcp/pubsub/csharp/proto/schema-proto.sln`
+- `dotnet build throughput/gcp/pubsub/csharp/throughput.sln`
 
 ### Run (examples)
-- JSON producer: `dotnet run --project schema/gcp-pubsub/csharp/json/Producer/Producer.csproj`
-- JSON pull consumer: `dotnet run --project schema/gcp-pubsub/csharp/json/Consumer.Pull/Consumer.Pull.csproj`
-- JSON push consumer: `dotnet run --project schema/gcp-pubsub/csharp/json/Consumer.Push/Consumer.Push.csproj`
-- Proto producer: `dotnet run --project schema/gcp-pubsub/csharp/proto/Producer/Producer.csproj`
-- Proto consumer: `dotnet run --project schema/gcp-pubsub/csharp/proto/Consumer/Consumer.csproj`
-- High-throughput producer: `dotnet run --project throughput/gcp-pubsub/csharp/Producer/Producer.csproj`
-- High-throughput pull consumer: `dotnet run --project throughput/gcp-pubsub/csharp/Consumer.Pull/Consumer.Pull.csproj`
-- High-throughput push consumer: `dotnet run --project throughput/gcp-pubsub/csharp/Consumer.Push/Consumer.Push.csproj`
-- Go throughput producer: `cd throughput/gcp-pubsub/go/producer` then `CONFIG_PATH=config.local.yaml go run .`
-- Rust throughput producer: `cd throughput/gcp-pubsub/rust/producer` then `CONFIG_PATH=config.local.yaml cargo run`
+- JSON producer: `dotnet run --project schema/gcp/pubsub/csharp/json/Producer/Producer.csproj`
+- JSON pull consumer: `dotnet run --project schema/gcp/pubsub/csharp/json/Consumer.Pull/Consumer.Pull.csproj`
+- JSON push consumer: `dotnet run --project schema/gcp/pubsub/csharp/json/Consumer.Push/Consumer.Push.csproj`
+- Proto producer: `dotnet run --project schema/gcp/pubsub/csharp/proto/Producer/Producer.csproj`
+- Proto consumer: `dotnet run --project schema/gcp/pubsub/csharp/proto/Consumer/Consumer.csproj`
+- High-throughput producer: `dotnet run --project throughput/gcp/pubsub/csharp/Producer/Producer.csproj`
+- High-throughput pull consumer: `dotnet run --project throughput/gcp/pubsub/csharp/Consumer.Pull/Consumer.Pull.csproj`
+- High-throughput push consumer: `dotnet run --project throughput/gcp/pubsub/csharp/Consumer.Push/Consumer.Push.csproj`
+- Go throughput producer: `cd throughput/gcp/pubsub/go/producer` then `CONFIG_PATH=config.local.yaml go run .`
+- Rust throughput producer: `cd throughput/gcp/pubsub/rust/producer` then `CONFIG_PATH=config.local.yaml cargo run`
 
 ### Tests
 - No test projects are present today.
@@ -122,7 +123,7 @@
 - Pull handlers should NACK on exceptions to allow retry.
 
 ## Protobuf conventions (proto example)
-- `.proto` definitions live in `schema/gcp-pubsub/csharp/proto/Shared/Proto/`.
+- `.proto` definitions live in `schema/gcp/pubsub/csharp/proto/Shared/Proto/`.
 - `Grpc.Tools` generates types; do not manually edit generated files.
 - Use `ToByteString()` to publish and `Parser.ParseFrom()` to deserialize.
 

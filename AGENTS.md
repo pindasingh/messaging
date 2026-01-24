@@ -3,34 +3,32 @@
 ## Repository overview
 - This repo contains messaging examples organized by problem space.
 - The top-level layout is `problem space → provider → product → language`.
-- Schema examples add a format layer: `schema/<provider>/<product>/<language>/<format>`.
 - Primary solutions today:
-  - `schema/gcp/pubsub/csharp/json/schema-json.sln` (JSON payload examples)
-  - `schema/gcp/pubsub/csharp/proto/schema-proto.sln` (protobuf payload examples)
+  - `pub-sub/gcp/pubsub/csharp/pubsub.sln` (Pub/Sub JSON examples)
+  - `point-to-point/gcp/cloud-tasks/csharp/cloud-tasks.sln` (Cloud Tasks point-to-point JSON examples)
   - `throughput/gcp/pubsub/csharp/throughput.sln` (high-throughput JSON examples)
 - Each language folder should include its own README with build/run steps.
 - Providers are lowercase kebab-case (for example, `gcp`).
 - Products are lowercase kebab-case (for example, `pubsub`).
 - Languages use canonical names (`csharp`, `go`, `rust`).
-- Schema formats are lowercase (`json`, `proto`) and sit under language.
 
 ## Build / run / test
 ### Restore
-- `dotnet restore schema/gcp/pubsub/csharp/json/schema-json.sln`
-- `dotnet restore schema/gcp/pubsub/csharp/proto/schema-proto.sln`
+- `dotnet restore pub-sub/gcp/pubsub/csharp/pubsub.sln`
+- `dotnet restore point-to-point/gcp/cloud-tasks/csharp/cloud-tasks.sln`
 - `dotnet restore throughput/gcp/pubsub/csharp/throughput.sln`
 
 ### Build
-- `dotnet build schema/gcp/pubsub/csharp/json/schema-json.sln`
-- `dotnet build schema/gcp/pubsub/csharp/proto/schema-proto.sln`
+- `dotnet build pub-sub/gcp/pubsub/csharp/pubsub.sln`
+- `dotnet build point-to-point/gcp/cloud-tasks/csharp/cloud-tasks.sln`
 - `dotnet build throughput/gcp/pubsub/csharp/throughput.sln`
 
 ### Run (examples)
-- JSON producer: `dotnet run --project schema/gcp/pubsub/csharp/json/Producer/Producer.csproj`
-- JSON pull consumer: `dotnet run --project schema/gcp/pubsub/csharp/json/Consumer.Pull/Consumer.Pull.csproj`
-- JSON push consumer: `dotnet run --project schema/gcp/pubsub/csharp/json/Consumer.Push/Consumer.Push.csproj`
-- Proto producer: `dotnet run --project schema/gcp/pubsub/csharp/proto/Producer/Producer.csproj`
-- Proto consumer: `dotnet run --project schema/gcp/pubsub/csharp/proto/Consumer/Consumer.csproj`
+- Pub/Sub producer: `dotnet run --project pub-sub/gcp/pubsub/csharp/Producer/Producer.csproj`
+- Pub/Sub pull consumer: `dotnet run --project pub-sub/gcp/pubsub/csharp/Consumer.Pull/Consumer.Pull.csproj`
+- Pub/Sub push consumer: `dotnet run --project pub-sub/gcp/pubsub/csharp/Consumer.Push/Consumer.Push.csproj`
+- Cloud Tasks producer: `dotnet run --project point-to-point/gcp/cloud-tasks/csharp/Producer/Producer.csproj`
+- Cloud Tasks consumer: `dotnet run --project point-to-point/gcp/cloud-tasks/csharp/Consumer/Consumer.csproj`
 - High-throughput producer: `dotnet run --project throughput/gcp/pubsub/csharp/Producer/Producer.csproj`
 - High-throughput pull consumer: `dotnet run --project throughput/gcp/pubsub/csharp/Consumer.Pull/Consumer.Pull.csproj`
 - High-throughput push consumer: `dotnet run --project throughput/gcp/pubsub/csharp/Consumer.Push/Consumer.Push.csproj`
@@ -44,6 +42,8 @@
   - Single test by name: `dotnet test <test-project> --filter FullyQualifiedName~Namespace.ClassName.TestName`
   - Single test by trait: `dotnet test <test-project> --filter "Category=Unit"`
   - Single test by class/file: `dotnet test <test-project> --filter FullyQualifiedName~Namespace.ClassName`
+  - Go tests (if added): `go test ./...`
+  - Rust tests (if added): `cargo test`
 
 ### Lint / format
 - No formatter or lint config is present (`.editorconfig` not found).
@@ -61,6 +61,9 @@
 - Required fields depend on app:
   - Producer: `PubSub:ProjectId`, `PubSub:TopicId`
   - Consumers: `PubSub:ProjectId`, `PubSub:SubscriptionId`
+- Cloud Tasks settings are read from `Shared.Configuration.TasksSettings`:
+  - Producer: `Tasks:ProjectId`, `Tasks:LocationId`, `Tasks:QueueId`, `Tasks:TargetUrl`
+  - Consumer: `Tasks:ProjectId`, `Tasks:LocationId`, `Tasks:QueueId`, `Tasks:TargetUrl`
 - High-throughput examples also use `Throughput` settings (batching, flow control, compression, ack settings).
 
 ## Code style guidelines
@@ -121,11 +124,6 @@
   - Push consumer exposes `POST /push` accepting a Pub/Sub push payload.
 - Push handlers should return fast responses and log errors with message IDs.
 - Pull handlers should NACK on exceptions to allow retry.
-
-## Protobuf conventions (proto example)
-- `.proto` definitions live in `schema/gcp/pubsub/csharp/proto/Shared/Proto/`.
-- `Grpc.Tools` generates types; do not manually edit generated files.
-- Use `ToByteString()` to publish and `Parser.ParseFrom()` to deserialize.
 
 ## JSON conventions (json example)
 - JSON message model lives in `Shared/Events/OrderCreatedV1.cs`.

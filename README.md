@@ -1,6 +1,6 @@
 # Messaging Examples
 
-This repository organizes messaging samples by **problem space → provider → product → language**. Problem spaces include both capabilities (like `schema`, `throughput`) and messaging patterns (like `pub-sub`, `point-to-point`).
+This repository organizes messaging samples by **problem space → provider → product → language**. Problem spaces include both capabilities (like `throughput`) and messaging patterns (like `pub-sub`, `point-to-point`).
 
 ## Directory convention
 ```
@@ -10,10 +10,16 @@ This repository organizes messaging samples by **problem space → provider → 
       <language>/
 ```
 
-Schema examples add a format layer when needed:
+If a product has multiple approaches, insert an optional `<solution-name>` before the language:
 ```
-schema/<provider>/<product>/<language>/<format>/
+<problem-space>/
+  <provider>/
+    <product>/
+      <solution-name>/
+        <language>/
 ```
+
+Use a short, kebab-case approach label for `<solution-name>` (for example, `pull`, `push`, `http`, `worker`, `batch`).
 
 ## Conventions
 - Use lowercase kebab-case for providers (e.g., `gcp`, `azure`, `aws`, `apache`).

@@ -9,16 +9,14 @@ public sealed class ProcessingQueue
 
     public ProcessingQueue(ThroughputSettings settings)
     {
-        // Bounded channel gives backpressure to push endpoints under load.
+        // Bounded channel blocks writers when full (backpressure).
         _channel = Channel.CreateBounded<Func<CancellationToken, Task>>(
             new BoundedChannelOptions(settings.MaxOutstandingMessageCount)
             {
-                // Wait mode applies backpressure instead of dropping work.
                 FullMode = BoundedChannelFullMode.Wait
             });
     }
 
-    // Enqueue blocks when full, providing backpressure to the push endpoint.
     public ValueTask EnqueueAsync(Func<CancellationToken, Task> workItem, CancellationToken cancellationToken) =>
         _channel.Writer.WriteAsync(workItem, cancellationToken);
 

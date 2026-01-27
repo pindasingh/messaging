@@ -1,6 +1,6 @@
 # Messaging Examples
 
-This repository organizes messaging samples by **problem space → provider → product → language**. Problem spaces include both capabilities (like `throughput`) and messaging patterns (like `pub-sub`, `point-to-point`).
+This repository organizes messaging samples by **problem space → provider → product → language**. Problem spaces describe patterns or capabilities (for example, `point-to-point`, `throughput`, `outbox`).
 
 ## Directory convention
 ```

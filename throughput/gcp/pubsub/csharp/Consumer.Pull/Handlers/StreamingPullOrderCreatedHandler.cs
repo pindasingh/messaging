@@ -32,10 +32,9 @@ public class StreamingPullOrderCreatedHandler : BackgroundService
         clientBuilder.SubscriptionName = subscriptionName;
         _client = await clientBuilder.BuildAsync(stoppingToken);
 
-        // Concurrency + flow control keep the pipeline saturated without runaway memory.
+        // Semaphore enforces bounded concurrency.
         var handler = new SemaphoreSlim(_throughputSettings.MaxConcurrentMessages);
 
-        // Semaphore enforces bounded parallelism for message processing.
         _logger.LogInformation("Starting high-throughput pull consumer for {Subscription}", _settings.SubscriptionId);
 
         await _client.StartAsync(async (message, token) =>

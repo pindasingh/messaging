@@ -1,15 +1,23 @@
 using Consumer.Handlers;
 using Shared.Configuration;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Consumer;
 
-builder.Services.AddEventHubsSettings(builder.Configuration, requireConsumerGroup: true);
+internal static class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHostedService<OrderCreatedHandler>();
-builder.Services.AddHealthChecks();
+        builder.Services.AddEventHubsSettings(builder.Configuration, requireConsumerGroup: true);
 
-var app = builder.Build();
+        builder.Services.AddHostedService<OrderCreatedHandler>();
+        builder.Services.AddHealthChecks();
 
-app.MapHealthChecks("/health");
+        var app = builder.Build();
 
-app.Run();
+        app.MapHealthChecks("/health");
+
+        app.Run();
+    }
+}

@@ -2,18 +2,26 @@ using Consumer.Handlers;
 using Shared.Configuration;
 using Shared.Events;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Consumer;
 
-builder.Services.AddTasksSettings(builder.Configuration);
+internal static class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<OrderCreatedHandler>();
-builder.Services.AddHealthChecks();
+        builder.Services.AddTasksSettings(builder.Configuration);
 
-var app = builder.Build();
+        builder.Services.AddScoped<OrderCreatedHandler>();
+        builder.Services.AddHealthChecks();
 
-app.MapHealthChecks("/health");
+        var app = builder.Build();
 
-app.MapPost("/tasks", (HttpRequest request, OrderCreatedHandler handler, OrderCreatedV1 payload) =>
-    handler.Handle(request, payload));
+        app.MapHealthChecks("/health");
 
-app.Run();
+        app.MapPost("/tasks", (HttpRequest request, OrderCreatedHandler handler, OrderCreatedV1 payload) =>
+            handler.Handle(request, payload));
+
+        app.Run();
+    }
+}

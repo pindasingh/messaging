@@ -4,38 +4,46 @@ using Producer.Handlers;
 using Producer.Models;
 using Shared.Configuration;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Producer;
 
-builder.Services.AddServiceBusQueueSettings(builder.Configuration);
-
-builder.Services.AddSingleton(sp =>
+internal static class Program
 {
-    var settings = sp.GetRequiredService<IOptions<ServiceBusQueueSettings>>().Value;
-    return new ServiceBusClient(settings.ConnectionString);
-});
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton(sp =>
-{
-    var settings = sp.GetRequiredService<IOptions<ServiceBusQueueSettings>>().Value;
-    var client = sp.GetRequiredService<ServiceBusClient>();
-    return client.CreateSender(settings.QueueName);
-});
+        builder.Services.AddServiceBusQueueSettings(builder.Configuration);
 
-builder.Services.AddScoped<OrderCreatedPublisher>();
-builder.Services.AddHealthChecks();
+        builder.Services.AddSingleton(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<ServiceBusQueueSettings>>().Value;
+            return new ServiceBusClient(settings.ConnectionString);
+        });
 
-var app = builder.Build();
+        builder.Services.AddSingleton(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<ServiceBusQueueSettings>>().Value;
+            var client = sp.GetRequiredService<ServiceBusClient>();
+            return client.CreateSender(settings.QueueName);
+        });
 
-app.MapHealthChecks("/health");
+        builder.Services.AddScoped<OrderCreatedPublisher>();
+        builder.Services.AddHealthChecks();
 
-app.MapPost("/publish", (PublishMessageRequest request, OrderCreatedPublisher publisher) =>
-    publisher.Publish(request));
+        var app = builder.Build();
 
-var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
-lifetime.ApplicationStopping.Register(() =>
-{
-    var client = app.Services.GetRequiredService<ServiceBusClient>();
-    client.DisposeAsync().AsTask().GetAwaiter().GetResult();
-});
+        app.MapHealthChecks("/health");
 
-app.Run();
+        app.MapPost("/publish", (PublishMessageRequest request, OrderCreatedPublisher publisher) =>
+            publisher.Publish(request));
+
+        var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+        lifetime.ApplicationStopping.Register(() =>
+        {
+            var client = app.Services.GetRequiredService<ServiceBusClient>();
+            client.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        });
+
+        app.Run();
+    }
+}

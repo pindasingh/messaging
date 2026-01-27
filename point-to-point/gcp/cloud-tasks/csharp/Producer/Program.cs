@@ -4,20 +4,28 @@ using Producer.Handlers;
 using Producer.Models;
 using Shared.Configuration;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Producer;
 
-builder.Services.AddTasksSettings(builder.Configuration);
+internal static class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton(CloudTasksClient.Create());
+        builder.Services.AddTasksSettings(builder.Configuration);
 
-builder.Services.AddScoped<OrderCreatedPublisher>();
-builder.Services.AddHealthChecks();
+        builder.Services.AddSingleton(CloudTasksClient.Create());
 
-var app = builder.Build();
+        builder.Services.AddScoped<OrderCreatedPublisher>();
+        builder.Services.AddHealthChecks();
 
-app.MapHealthChecks("/health");
+        var app = builder.Build();
 
-app.MapPost("/publish", (PublishMessageRequest request, OrderCreatedPublisher publisher) =>
-    publisher.Publish(request));
+        app.MapHealthChecks("/health");
 
-app.Run();
+        app.MapPost("/publish", (PublishMessageRequest request, OrderCreatedPublisher publisher) =>
+            publisher.Publish(request));
+
+        app.Run();
+    }
+}

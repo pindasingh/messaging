@@ -1,18 +1,26 @@
 using Consumer.Push.Handlers;
 using Shared.Configuration;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Consumer.Push;
 
-builder.Services.AddPubSubSettings(builder.Configuration, requireSubscription: true);
+internal static class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<OrderCreatedHandler>();
-builder.Services.AddHealthChecks();
+        builder.Services.AddPubSubSettings(builder.Configuration, requireSubscription: true);
 
-var app = builder.Build();
+        builder.Services.AddScoped<OrderCreatedHandler>();
+        builder.Services.AddHealthChecks();
 
-app.MapHealthChecks("/health");
+        var app = builder.Build();
 
-app.MapPost("/push", (PubSubPushRequest request, OrderCreatedHandler handler) =>
-    handler.Handle(request));
+        app.MapHealthChecks("/health");
 
-app.Run();
+        app.MapPost("/push", (PubSubPushRequest request, OrderCreatedHandler handler) =>
+            handler.Handle(request));
+
+        app.Run();
+    }
+}

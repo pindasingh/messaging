@@ -4,31 +4,39 @@ using Producer.Handlers;
 using Producer.Models;
 using Shared.Configuration;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Producer;
 
-builder.Services.AddEventHubsSettings(builder.Configuration);
-
-builder.Services.AddSingleton(sp =>
+internal static class Program
 {
-    var settings = sp.GetRequiredService<IOptions<EventHubsSettings>>().Value;
-    return new EventHubProducerClient(settings.ConnectionString, settings.EventHubName);
-});
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<OrderCreatedPublisher>();
-builder.Services.AddHealthChecks();
+        builder.Services.AddEventHubsSettings(builder.Configuration);
 
-var app = builder.Build();
+        builder.Services.AddSingleton(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<EventHubsSettings>>().Value;
+            return new EventHubProducerClient(settings.ConnectionString, settings.EventHubName);
+        });
 
-app.MapHealthChecks("/health");
+        builder.Services.AddScoped<OrderCreatedPublisher>();
+        builder.Services.AddHealthChecks();
 
-app.MapPost("/publish", (PublishMessageRequest request, OrderCreatedPublisher publisher) =>
-    publisher.Publish(request));
+        var app = builder.Build();
 
-var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
-lifetime.ApplicationStopping.Register(() =>
-{
-    var producer = app.Services.GetRequiredService<EventHubProducerClient>();
-    producer.CloseAsync().GetAwaiter().GetResult();
-});
+        app.MapHealthChecks("/health");
 
-app.Run();
+        app.MapPost("/publish", (PublishMessageRequest request, OrderCreatedPublisher publisher) =>
+            publisher.Publish(request));
+
+        var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+        lifetime.ApplicationStopping.Register(() =>
+        {
+            var producer = app.Services.GetRequiredService<EventHubProducerClient>();
+            producer.CloseAsync().GetAwaiter().GetResult();
+        });
+
+        app.Run();
+    }
+}
